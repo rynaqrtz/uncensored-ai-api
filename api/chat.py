@@ -34,4 +34,3 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(json.dumps({"success": False, "creator": CREATOR, "error": str(e)}).encode())
-PYEOF
