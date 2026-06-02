@@ -27,7 +27,6 @@
   <p>
     <img src="https://img.shields.io/badge/version-1.0.0-0969da?style=flat-square" alt="Version">
     <img src="https://img.shields.io/badge/node-%3E%3D18.x-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node">
-    <img src="https://img.shields.io/badge/license-MIT-22863a?style=flat-square" alt="License">
     <img src="https://img.shields.io/badge/model-Anubis%2070B-7C3AED?style=flat-square" alt="Model">
     <img src="https://img.shields.io/badge/auth-Supabase%20JWT-3ECF8E?style=flat-square&logo=supabase&logoColor=white" alt="Auth">
     <img src="https://img.shields.io/badge/stream-SSE%20✓-F97316?style=flat-square" alt="Streaming">
