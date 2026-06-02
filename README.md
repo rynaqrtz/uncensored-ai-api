@@ -11,10 +11,10 @@
 
   <p>
     <a href="https://github.com/rynaqrtz/uncensored-ai-api/stargazers">
-      <img src="https://img.shields.io/github/stars/rynaqrtz/uncensored-ai-api?style=for-the-badge&color=FFD700&logo=github&logoColor=white" alt="Stars">
+      <img src="https://img.shields.io/github/stars/rynaqrtz/uncensored-ai-api?style=for-the-badge&color=FFD700" alt="Stars">
     </a>
     <a href="https://github.com/rynaqrtz/uncensored-ai-api/network/members">
-      <img src="https://img.shields.io/github/forks/rynaqrtz/uncensored-ai-api?style=for-the-badge&color=4A90E2&logo=git&logoColor=white" alt="Forks">
+      <img src="https://img.shields.io/github/forks/rynaqrtz/uncensored-ai-api?style=for-the-badge&color=4A90E2" alt="Forks">
     </a>
     <a href="https://github.com/rynaqrtz/uncensored-ai-api/issues">
       <img src="https://img.shields.io/github/issues/rynaqrtz/uncensored-ai-api?style=for-the-badge&color=E74C3C" alt="Issues">
@@ -25,42 +25,22 @@
   </p>
 
   <p>
-    <img src="https://img.shields.io/badge/version-1.0.0-0969da?style=flat-square" alt="Version">
-    <img src="https://img.shields.io/badge/node-%3E%3D18.x-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node">
+    <img src="https://img.shields.io/badge/version-1.0.0-blue?style=flat-square" alt="Version">
+    <img src="https://img.shields.io/badge/python-3.8+-blue?style=flat-square&logo=python" alt="Python">
     <img src="https://img.shields.io/badge/model-Anubis%2070B-7C3AED?style=flat-square" alt="Model">
     <img src="https://img.shields.io/badge/auth-Supabase%20JWT-3ECF8E?style=flat-square&logo=supabase&logoColor=white" alt="Auth">
     <img src="https://img.shields.io/badge/stream-SSE%20✓-F97316?style=flat-square" alt="Streaming">
+    <img src="https://img.shields.io/badge/creator-rynaqrtz-orange?style=flat-square" alt="Creator">
   </p>
 </div>
 
 ---
 
-## 📋 Table of Contents
-
-- [Overview](#-overview)
-- [Fitur Unggulan](#-fitur-unggulan)
-- [Tech Stack](#-tech-stack)
-- [Statistik & Spesifikasi](#-statistik--spesifikasi)
-- [Quick Start](#-quick-start)
-- [Instalasi](#-instalasi)
-- [CLI Usage](#-cli-usage)
-- [Response Format](#-response-format)
-- [Deploy ke Vercel](#️-deploy-ke-vercel)
-- [Deploy ke VPS (Express)](#-deploy-ke-vps-expressjs)
-- [Arsitektur & Reverse Engineering](#-arsitektur--reverse-engineering)
-- [Struktur Proyek](#-struktur-proyek)
-- [Error Handling](#-error-handling)
-- [FAQ](#-faq)
-- [Contributing](#-contributing)
-- [Disclaimer](#️-disclaimer)
-
----
-
 ## 🌟 Overview
 
-**Uncensored AI API** adalah wrapper CLI dan REST API yang membungkus endpoint internal [uncensored.ai](https://uncensored.ai) — sebuah platform yang menyediakan model **Anubis 70B** tanpa system prompt restrictif. Dibangun dengan hasil reverse engineering React SPA + Supabase Edge Function.
+**Uncensored AI API** adalah wrapper CLI dan REST API yang membungkus endpoint internal [uncensored.ai](https://uncensored.ai) — platform yang menyediakan model **Anubis 70B** tanpa system prompt restrictif. Dibangun dari hasil reverse engineering React SPA + Supabase Edge Function.
 
-> 💡 **Use case:** Integrasi model AI ke project Node.js, bot, atau aplikasi web tanpa perlu urus autentikasi Supabase manual — semua dihandle otomatis.
+> 💡 **Use case:** Integrasi model AI ke project Python, bot, atau aplikasi web tanpa perlu urus autentikasi Supabase manual.
 
 **Kenapa pakai ini?**
 
@@ -76,39 +56,38 @@
 
 | Fitur | Deskripsi |
 |-------|-----------|
-| 🔄 **Auto Signup + Token Refresh** | Jika token expired, sistem otomatis signup akun baru. Token dipersist di `.unces_token.json` |
+| 🔄 **Auto Signup + Token Refresh** | Token expired? Sistem otomatis signup akun baru. Token dipersist di `.unces_token.json` |
 | 🧠 **Context Memory** | Percakapan multi-turn disimpan di `.unces_context.json`. Gunakan `--new` untuk reset sesi |
-| ⚡ **Real-time Streaming** | Output muncul saat AI "mengetik" via Server-Sent Events (SSE). Gunakan `--json` untuk output batch |
-| 🧹 **Clean Output** | Auto-strip mojibake, control characters, dan whitespace berlebih dari response raw SSE |
-| 📦 **Modular Export** | Fungsi `chat()` bisa di-import langsung ke project Express/Vercel/Next.js lain |
-| 💻 **CLI First-class** | Semua opsi (temp, max tokens, reset context) tersedia langsung dari terminal |
+| ⚡ **Real-time Streaming** | Output muncul saat AI "mengetik" via Server-Sent Events. Gunakan `--json` untuk output batch |
+| 🧹 **Clean Output** | Auto-strip mojibake & encoding errors dari response raw SSE |
+| 📦 **Modular** | Fungsi `chat()` bisa di-import langsung ke project lain |
+| 💻 **CLI First-class** | Semua opsi (temp, max tokens, reset context) langsung dari terminal |
 
 ---
 
 ## 🛠 Tech Stack
 
-| Teknologi | Versi | Kegunaan |
-|-----------|-------|----------|
-| **Node.js** | `≥ 18.x` | Runtime |
-| **node-fetch** | `^2.7.0` | HTTP client — SSE streaming + Supabase calls |
-| **Supabase Auth** | — | JWT access token + auto refresh |
-| **Vercel** | — | Serverless deployment |
+| Teknologi | Kegunaan |
+|-----------|----------|
+| **Python 3.8+** | Runtime utama |
+| **requests** | HTTP client — SSE streaming + Supabase calls |
+| **Supabase Auth** | JWT access token + auto refresh |
+| **Vercel** | Serverless deployment |
 
 ---
 
-## 📊 Statistik & Spesifikasi
+## 📊 Spesifikasi
 
 | Parameter | Nilai |
 |-----------|-------|
-| **Model** | Anubis 70B (`uaia18lqf6dn-drummer-anubis-70b-1-1-copy`) |
+| **Model** | Anubis 70B |
 | **Provider** | Supabase Edge Function |
 | **Max Tokens** | 100,000 (kustomisasi via `--max`) |
-| **Temperature Range** | 0.0 – 2.0 (default `1.2`) |
-| **Auth Mechanism** | Supabase JWT — expire 1 jam, auto-refresh |
-| **Streaming Protocol** | Server-Sent Events (SSE) |
-| **Context Storage** | Local JSON (`.unces_context.json`) |
-| **Token Storage** | Local JSON (`.unces_token.json`) |
-| **Fallback Endpoint** | `chat-backup` (non-streaming) jika SSE gagal |
+| **Temperature** | 0.0 – 2.0 (default `0.9`) |
+| **Auth** | Supabase JWT — expire 1 jam, auto-refresh |
+| **Streaming** | Server-Sent Events (SSE) |
+| **Context** | Local JSON (`.unces_context.json`) |
+| **Token** | Local JSON (`.unces_token.json`) |
 
 ---
 
@@ -117,251 +96,133 @@
 ```bash
 git clone https://github.com/rynaqrtz/uncensored-ai-api.git
 cd uncensored-ai-api
-npm install
-node unces.js "Halo, siapa kamu?"
+pip install requests
+python unces.py "Halo, siapa kamu?"
 ```
 
 Pertama kali jalan, sistem auto-signup akun Supabase dan simpan token. Request berikutnya langsung pakai token tersimpan.
 
 ---
 
-## 📦 Instalasi
+📦 Instalasi
 
-**Requirements:** Node.js `≥ 18.x`, npm atau yarn
+Requirements: Python ≥ 3.8
 
 ```bash
-# 1. Clone
 git clone https://github.com/rynaqrtz/uncensored-ai-api.git
 cd uncensored-ai-api
-
-# 2. Install dependencies
-npm install
-
-# 3. Test
-node unces.js "Jelaskan cara kerja neural network"
+pip install -r requirements.txt
+python unces.py "Jelaskan cara kerja neural network"
 ```
 
 ---
 
-## 💻 CLI Usage
+💻 CLI Usage
 
 ```bash
-node unces.js [options] "prompt"
+python unces.py [options] "prompt"
 ```
 
-### Options
+Options
 
-| Option | Alias | Tipe | Default | Keterangan |
-|--------|-------|------|---------|------------|
-| `--new` | `-n` | flag | `false` | Reset context, mulai sesi baru |
-| `--json` | `-j` | flag | `false` | Output JSON terstruktur (non-streaming) |
-| `--temp <n>` | — | float | `1.2` | Temperature: 0.0 (deterministik) – 2.0 (kreatif) |
-| `--max <n>` | — | int | `100000` | Batas maksimum token output |
+Option Alias Default Keterangan
+--new -n false Reset context, mulai sesi baru
+--json -j false Output JSON terstruktur
+--temp <n> — 0.9 Temperature: 0.0 – 2.0
+--max <n> — 100000 Batas maksimum token output
 
-### Contoh Penggunaan
+Contoh
 
 ```bash
-# Basic prompt
-node unces.js "Jelaskan sejarah internet secara detail"
+python unces.py "Jelaskan sejarah internet"
 
-# Mulai sesi baru (reset context)
-node unces.js --new "Halo, nama saya Andi"
+python unces.py --new "Halo, nama saya Andi"
+python unces.py "Siapa nama saya tadi?"
 
-# Lanjut sesi — AI ingat nama kamu
-node unces.js "Siapa nama saya tadi?"
+python unces.py --json --temp 1.8 "Tulis cerita fiksi sci-fi"
 
-# JSON output + temperature tinggi
-node unces.js --json --temp 1.8 "Tulis cerita fiksi sci-fi"
-
-# Batasi panjang output
-node unces.js --max 5000 "Rangkum teori relativitas Einstein"
-
-# Kombinasi flags
-node unces.js --new --json --temp 0.5 --max 20000 "Analisis algoritma quicksort"
-```
-
-### Alur Context Memory
-
-```
-Sesi baru: node unces.js --new "Nama saya Budi"
-           └─ Simpan ke .unces_context.json
-           
-Lanjut:    node unces.js "Siapa saya?"
-           └─ Load .unces_context.json → AI ingat "Budi"
-
-Reset:     node unces.js --new "Kita mulai ulang"
-           └─ Hapus .unces_context.json lama
+python unces.py --max 5000 "Rangkum teori relativitas Einstein"
 ```
 
 ---
 
-## 📄 Response Format
+📄 Response Format
 
-### Streaming Mode (default)
+Streaming Mode (default)
 
-Output muncul karakter per karakter langsung di terminal saat AI merespons.
+Output muncul langsung di terminal saat AI merespons.
 
-### JSON Mode (`--json`)
+JSON Mode (--json)
 
 ```json
 {
   "success": true,
   "model": "anubis-70b",
-  "content": "Jawaban lengkap dari AI ada di sini...",
+  "content": "Jawaban lengkap dari AI...",
   "creator": "rynaqrtz",
-  "max_tokens_sent": 100000,
   "output_length": 15234,
   "word_count": 2105
 }
 ```
 
-### Error Response
-
-```json
-{
-  "success": false,
-  "creator": "rynaqrtz",
-  "error": "Token expired and signup failed: 429 Too Many Requests"
-}
-```
-
 ---
 
-## ☁️ Deploy ke Vercel
+☁️ Deploy ke Vercel
 
-### 1. Clone & Install
+1. Clone & Install
 
 ```bash
 git clone https://github.com/rynaqrtz/uncensored-ai-api.git
 cd uncensored-ai-api
-npm install
 ```
 
-### 2. Buat `api/chat.js`
-
-```javascript
-const { chat } = require('../unces');
-
-module.exports = async (req, res) => {
-  const { prompt, new: newChat, temp, max } = req.query;
-
-  if (!prompt) {
-    return res.status(400).json({ success: false, error: 'Parameter "prompt" diperlukan' });
-  }
-
-  try {
-    const result = await chat(prompt, {
-      newChat: newChat === 'true',
-      temperature: parseFloat(temp) || 1.2,
-      maxTokens: parseInt(max) || 100000,
-      stream: false,
-    });
-    res.status(200).json(result);
-  } catch (e) {
-    res.status(500).json({ success: false, error: e.message, creator: 'rynaqrtz' });
-  }
-};
-```
-
-### 3. `vercel.json`
-
-```json
-{
-  "version": 2,
-  "functions": {
-    "api/chat.js": {
-      "runtime": "nodejs18.x",
-      "memory": 512,
-      "maxDuration": 30
-    }
-  },
-  "rewrites": [
-    { "source": "/api/chat", "destination": "/api/chat" }
-  ]
-}
-```
-
-### 4. Deploy
+2. Deploy
 
 ```bash
-npm i -g vercel
 vercel --prod
 ```
 
-### 5. Gunakan API
+3. Gunakan API
 
-```bash
-curl "https://your-project.vercel.app/api/chat?prompt=Halo+siapa+kamu"
-curl "https://your-project.vercel.app/api/chat?prompt=Analisis+data+ini&new=true&temp=0.7"
-curl "https://your-project.vercel.app/api/chat?prompt=Cerita+pendek&max=5000&temp=1.8"
 ```
-
-> ⚠️ **Vercel Free Tier:** Execution limit **30 detik** (dengan konfigurasi `maxDuration` di atas). Untuk prompt yang menghasilkan output sangat panjang (>50k token), pertimbangkan Railway atau VPS.
-
----
-
-## 🖥 Deploy ke VPS (Express.js)
-
-```bash
-npm install express
-```
-
-Buat `server.js`:
-
-```javascript
-const express = require('express');
-const { chat } = require('./unces');
-
-const app = express();
-
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
-  next();
-});
-
-app.get('/api/chat', async (req, res) => {
-  const { prompt, new: newChat, temp, max } = req.query;
-
-  if (!prompt) {
-    return res.status(400).json({ success: false, error: 'prompt required' });
-  }
-
-  try {
-    const result = await chat(prompt, {
-      newChat: newChat === 'true',
-      temperature: parseFloat(temp) || 1.2,
-      maxTokens: parseInt(max) || 100000,
-      stream: false,
-    });
-    res.json(result);
-  } catch (e) {
-    res.status(500).json({ success: false, error: e.message, creator: 'rynaqrtz' });
-  }
-});
-
-app.listen(3000, () => console.log('🚀 Uncensored AI API running at http://localhost:3000'));
-```
-
-### Production dengan PM2
-
-```bash
-npm install -g pm2
-pm2 start server.js --name uncensored-ai-api
-pm2 save && pm2 startup
+GET https://your-project.vercel.app/api/chat?prompt=Halo+siapa+kamu
+GET https://your-project.vercel.app/api/chat?prompt=Cerita+pendek&new=true&temp=1.5&max=5000
 ```
 
 ---
 
-## 🔬 Arsitektur & Reverse Engineering
+🖥 Deploy ke VPS (Flask)
 
-### Alur Request
+```python
+from flask import Flask, request, jsonify
+from unces import chat
+
+app = Flask(__name__)
+
+@app.route('/api/chat')
+def api_chat():
+    prompt = request.args.get('prompt', '')
+    if not prompt:
+        return jsonify({"error": "prompt required"}), 400
+    new_chat = request.args.get('new', 'false') == 'true'
+    temp = float(request.args.get('temp', 0.9))
+    max_tokens = int(request.args.get('max', 100000))
+    result = chat(prompt, temperature=temp, max_tokens=max_tokens, new_chat=new_chat, stream=False)
+    return jsonify(result)
+
+if __name__ == '__main__':
+    app.run(port=3000)
+```
+
+---
+
+🔬 Arsitektur & Reverse Engineering
 
 ```
 Client (CLI / HTTP GET)
        │
        ▼
-  unces.js
+  unces.py
        │
        ├─ Cek .unces_token.json
        │     ├─ Tidak ada / Expired → POST /auth/v1/signup (auto)
@@ -371,130 +232,26 @@ Client (CLI / HTTP GET)
        │
        ▼
   POST https://mkstqjtsujvcaobdksxs.supabase.co/functions/v1/chat-streaming
-       Headers: Authorization: Bearer <jwt_access_token>
-                apikey: <supabase_anon_key>
        Body: {
-         messages: [...context, { role: "user", content: prompt }],
+         messages: [...],
          systemPrompt: "...",
          stream: true,
-         temperature: 1.2,
+         temperature: 0.9,
          max_tokens: 100000
        }
        │
        ▼
   SSE Stream: data: {"choices":[{"delta":{"content":"token"}}]}
        │
-       ├─ Streaming mode → print langsung ke stdout
+       ├─ Streaming mode → print langsung
        └─ JSON mode → buffer semua token → return JSON
-       │
-       ▼
-  Simpan context ke .unces_context.json
-```
-
-### Komponen Internal
-
-| Komponen | Detail |
-|----------|--------|
-| **Auth Endpoint** | `POST /auth/v1/signup` dengan email acak |
-| **Token Type** | JWT access token + refresh token |
-| **Token Expire** | 1 jam — auto-refresh via signup baru |
-| **Chat Endpoint** | `supabase.co/functions/v1/chat-streaming` |
-| **Model ID** | `uaia18lqf6dn-drummer-anubis-70b-1-1-copy` |
-| **Stream Protocol** | Server-Sent Events — `data: {...}\n\n` |
-| **Fallback** | `chat-backup` endpoint (non-streaming) |
-| **Token Storage** | `.unces_token.json` di direktori kerja |
-| **Context Storage** | `.unces_context.json` di direktori kerja |
-
-### Headers yang Diperlukan
-
-```http
-POST /functions/v1/chat-streaming HTTP/1.1
-Host: mkstqjtsujvcaobdksxs.supabase.co
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-Content-Type: application/json
 ```
 
 ---
 
-## ⚠️ Error Handling
+⚠️ Disclaimer
 
-| HTTP Code | Situasi |
-|:---------:|---------|
-| `200` | Sukses |
-| `400` | Parameter `prompt` tidak ada |
-| `401` | Token expired dan signup gagal |
-| `429` | Rate limit dari Supabase — terlalu banyak signup |
-| `500` | Error internal scraper / network issue |
-| `504` | Timeout di Vercel |
-
----
-
-## ❓ FAQ
-
-**Q: Apakah perlu akun uncensored.ai?**
-
-Tidak. Sistem auto-signup akun baru setiap kali diperlukan. Kamu tidak perlu punya akun manual.
-
----
-
-**Q: Token saya expired, apa yang terjadi?**
-
-Sistem otomatis signup akun baru dan simpan token fresh ke `.unces_token.json`. Proses ini transparan.
-
----
-
-**Q: Apa itu `.unces_token.json` dan `.unces_context.json`?**
-
-Dua file lokal yang disimpan di direktori kerja:
-- `.unces_token.json` — JWT access token dari Supabase
-- `.unces_context.json` — History percakapan multi-turn
-
-Keduanya otomatis dikelola oleh scraper. Tidak perlu diedit manual. Jangan di-commit ke git (sudah ada di `.gitignore`).
-
----
-
-**Q: Kenapa temperature default-nya 1.2?**
-
-Model Anubis 70B merespons lebih baik di temperature sedikit di atas 1.0. Di bawah 0.5 cenderung terlalu deterministik, di atas 1.8 mulai inkoheren. Range sweet spot: `0.7 – 1.5`.
-
----
-
-**Q: Bisa dipakai di production dengan traffic tinggi?**
-
-Tidak disarankan. Ini bukan API resmi — tidak ada SLA, rate limit bisa berubah sewaktu-waktu, dan bergantung pada ketersediaan endpoint Supabase milik pihak ketiga.
-
----
-
-**Q: Kenapa `node-fetch` versi 2 dan bukan 3?**
-
-node-fetch v3 adalah ESM-only. Karena proyek ini menggunakan CommonJS (`require`), versi 2 lebih kompatibel tanpa perlu ubah ke `import`.
-
----
-
-## 🤝 Contributing
-
-Pull request sangat welcome. Untuk perubahan besar, buka issue dulu.
-
-```bash
-# 1. Fork repo
-# 2. Buat branch baru
-git checkout -b feat/nama-fitur
-
-# 3. Commit dengan pesan yang jelas
-git commit -m "feat: tambah support streaming di Vercel via chunked response"
-
-# 4. Push
-git push origin feat/nama-fitur
-
-# 5. Buat Pull Request
-```
-
----
-
-## ⚠️ Disclaimer
-
-Proyek ini dibuat murni untuk **tujuan edukasi dan penelitian reverse engineering**. Bukan produk resmi dari uncensored.ai atau Supabase. Tidak ada jaminan ketersediaan layanan. Segala risiko penggunaan menjadi tanggung jawab pengguna sepenuhnya.
+Proyek ini dibuat untuk tujuan edukasi dan penelitian reverse engineering. Bukan produk resmi dari uncensored.ai atau Supabase.
 
 ---
 
