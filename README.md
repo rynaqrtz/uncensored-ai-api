@@ -31,7 +31,6 @@
     <img src="https://img.shields.io/badge/model-Anubis%2070B-7C3AED?style=flat-square" alt="Model">
     <img src="https://img.shields.io/badge/auth-Supabase%20JWT-3ECF8E?style=flat-square&logo=supabase&logoColor=white" alt="Auth">
     <img src="https://img.shields.io/badge/stream-SSE%20✓-F97316?style=flat-square" alt="Streaming">
-    <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Frynaqrtz%2Funcensored-ai-api&count_bg=%2379C83D&title_bg=%23555555&icon=github.svg&icon_color=%23FFFFFF&title=hits&edge_flat=true" alt="Hits">
   </p>
 </div>
 
