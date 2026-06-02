@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "functions": {
+    "api/chat.js": {
+      "runtime": "nodejs18.x",
+      "memory": 512,
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    { "source": "/api/chat", "destination": "/api/chat" }
+  ]
+}
