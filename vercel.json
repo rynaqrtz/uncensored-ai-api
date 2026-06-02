@@ -1,8 +1,8 @@
 {
   "version": 2,
   "functions": {
-    "api/chat.js": {
-      "runtime": "nodejs18.x",
+    "api/chat.py": {
+      "runtime": "python3.9",
       "memory": 512,
       "maxDuration": 30
     }
