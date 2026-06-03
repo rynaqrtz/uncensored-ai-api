@@ -10,26 +10,14 @@
   </p>
 
   <p>
-    <a href="https://github.com/rynaqrtz/uncensored-ai-api/stargazers">
-      <img src="https://img.shields.io/github/stars/rynaqrtz/uncensored-ai-api?style=for-the-badge&color=FFD700" alt="Stars">
+    <a href="https://github.com/rynaqrtz/ai-collection/stargazers">
+      <img src="https://img.shields.io/github/stars/rynaqrtz/ai-collection?style=for-the-badge&color=FFD700" alt="Stars">
     </a>
-    <a href="https://github.com/rynaqrtz/uncensored-ai-api/network/members">
-      <img src="https://img.shields.io/github/forks/rynaqrtz/uncensored-ai-api?style=for-the-badge&color=4A90E2" alt="Forks">
+    <a href="https://github.com/rynaqrtz/ai-collection/network/members">
+      <img src="https://img.shields.io/github/forks/rynaqrtz/ai-collection?style=for-the-badge&color=4A90E2" alt="Forks">
     </a>
-    <a href="https://github.com/rynaqrtz/uncensored-ai-api/issues">
-      <img src="https://img.shields.io/github/issues/rynaqrtz/uncensored-ai-api?style=for-the-badge&color=E74C3C" alt="Issues">
-    </a>
-    <a href="https://github.com/rynaqrtz/uncensored-ai-api/commits/main">
-      <img src="https://img.shields.io/github/last-commit/rynaqrtz/uncensored-ai-api?style=for-the-badge&color=2ECC71" alt="Last Commit">
-    </a>
-  </p>
-
-  <p>
     <img src="https://img.shields.io/badge/version-1.0.0-blue?style=flat-square" alt="Version">
-    <img src="https://img.shields.io/badge/python-3.8+-blue?style=flat-square&logo=python" alt="Python">
     <img src="https://img.shields.io/badge/model-Anubis%2070B-7C3AED?style=flat-square" alt="Model">
-    <img src="https://img.shields.io/badge/auth-Supabase%20JWT-3ECF8E?style=flat-square&logo=supabase&logoColor=white" alt="Auth">
-    <img src="https://img.shields.io/badge/stream-SSE%20✓-F97316?style=flat-square" alt="Streaming">
     <img src="https://img.shields.io/badge/creator-rynaqrtz-orange?style=flat-square" alt="Creator">
   </p>
 </div>
@@ -38,81 +26,23 @@
 
 ## 🌟 Overview
 
-**Uncensored AI API** adalah wrapper CLI dan REST API yang membungkus endpoint internal [uncensored.ai](https://uncensored.ai) — platform yang menyediakan model **Anubis 70B** tanpa system prompt restrictif. Dibangun dari hasil reverse engineering React SPA + Supabase Edge Function.
+**Uncensored AI API** membungkus endpoint internal uncensored.ai — model **Anubis 70B** tanpa filter. Hasil reverse engineering React SPA + Supabase Edge Function.
 
-> 💡 **Use case:** Integrasi model AI ke project Python, bot, atau aplikasi web tanpa perlu urus autentikasi Supabase manual.
-
-**Kenapa pakai ini?**
-
-- ✅ Zero konfigurasi — langsung jalan dengan satu command
-- ✅ Auto signup + token refresh tanpa intervensi manual
-- ✅ Multi-turn context memory otomatis tersimpan lokal
-- ✅ Streaming output real-time ala ChatGPT
-- ✅ Siap deploy serverless di Vercel dalam hitungan menit
-
----
-
-## ✨ Fitur Unggulan
-
-| Fitur | Deskripsi |
-|-------|-----------|
-| 🔄 **Auto Signup + Token Refresh** | Token expired? Sistem otomatis signup akun baru. Token dipersist di `.unces_token.json` |
-| 🧠 **Context Memory** | Percakapan multi-turn disimpan di `.unces_context.json`. Gunakan `--new` untuk reset sesi |
-| ⚡ **Real-time Streaming** | Output muncul saat AI "mengetik" via Server-Sent Events. Gunakan `--json` untuk output batch |
-| 🧹 **Clean Output** | Auto-strip mojibake & encoding errors dari response raw SSE |
-| 📦 **Modular** | Fungsi `chat()` bisa di-import langsung ke project lain |
-| 💻 **CLI First-class** | Semua opsi (temp, max tokens, reset context) langsung dari terminal |
-
----
-
-## 🛠 Tech Stack
-
-| Teknologi | Kegunaan |
-|-----------|----------|
-| **Python 3.8+** | Runtime utama |
-| **requests** | HTTP client — SSE streaming + Supabase calls |
-| **Supabase Auth** | JWT access token + auto refresh |
-| **Vercel** | Serverless deployment |
-
----
-
-## 📊 Spesifikasi
-
-| Parameter | Nilai |
-|-----------|-------|
-| **Model** | Anubis 70B |
-| **Provider** | Supabase Edge Function |
-| **Max Tokens** | 100,000 (kustomisasi via `--max`) |
-| **Temperature** | 0.0 – 2.0 (default `0.9`) |
-| **Auth** | Supabase JWT — expire 1 jam, auto-refresh |
-| **Streaming** | Server-Sent Events (SSE) |
-| **Context** | Local JSON (`.unces_context.json`) |
-| **Token** | Local JSON (`.unces_token.json`) |
+- ✅ Zero konfigurasi
+- ✅ Auto signup + token refresh
+- ✅ Multi-turn context memory
+- ✅ Streaming output real-time
+- ✅ Siap deploy Vercel
 
 ---
 
 ## ⚡ Quick Start
 
 ```bash
-git clone https://github.com/rynaqrtz/uncensored-ai-api.git
-cd uncensored-ai-api
-pip install requests
-python unces.py "Halo, siapa kamu?"
-```
-
-Pertama kali jalan, sistem auto-signup akun Supabase dan simpan token. Request berikutnya langsung pakai token tersimpan.
-
----
-
-📦 Instalasi
-
-Requirements: Python ≥ 3.8
-
-```bash
-git clone https://github.com/rynaqrtz/uncensored-ai-api.git
-cd uncensored-ai-api
+git clone https://github.com/rynaqrtz/ai-collection.git
+cd ai-collection/uncensored-ai
 pip install -r requirements.txt
-python unces.py "Jelaskan cara kerja neural network"
+python unces.py "Halo, siapa kamu?"
 ```
 
 ---
@@ -123,144 +53,40 @@ python unces.py "Jelaskan cara kerja neural network"
 python unces.py [options] "prompt"
 ```
 
-Options
+Option Default Keterangan
+--new, -n false Reset context
+--json, -j false Output JSON
+--temp <n> 0.9 Temperature (0-2)
+--max <n> 100000 Max tokens
 
-Option Alias Default Keterangan
---new -n false Reset context, mulai sesi baru
---json -j false Output JSON terstruktur
---temp <n> — 0.9 Temperature: 0.0 – 2.0
---max <n> — 100000 Batas maksimum token output
+---
 
-Contoh
+☁️ Deploy Vercel
 
 ```bash
-python unces.py "Jelaskan sejarah internet"
+vercel --prod
+```
 
-python unces.py --new "Halo, nama saya Andi"
-python unces.py "Siapa nama saya tadi?"
-
-python unces.py --json --temp 1.8 "Tulis cerita fiksi sci-fi"
-
-python unces.py --max 5000 "Rangkum teori relativitas Einstein"
+```
+GET /api/chat?prompt=Halo+siapa+kamu
+GET /api/chat?prompt=Cerita+pendek&new=true&temp=1.5
 ```
 
 ---
 
 📄 Response Format
 
-Streaming Mode (default)
-
-Output muncul langsung di terminal saat AI merespons.
-
-JSON Mode (--json)
-
 ```json
 {
   "success": true,
   "model": "anubis-70b",
-  "content": "Jawaban lengkap dari AI...",
-  "creator": "rynaqrtz",
-  "output_length": 15234,
-  "word_count": 2105
+  "content": "Jawaban dari AI...",
+  "creator": "rynaqrtz"
 }
 ```
 
 ---
 
-☁️ Deploy ke Vercel
-
-1. Clone & Install
-
-```bash
-git clone https://github.com/rynaqrtz/uncensored-ai-api.git
-cd uncensored-ai-api
-```
-
-2. Deploy
-
-```bash
-vercel --prod
-```
-
-3. Gunakan API
-
-```
-GET https://your-project.vercel.app/api/chat?prompt=Halo+siapa+kamu
-GET https://your-project.vercel.app/api/chat?prompt=Cerita+pendek&new=true&temp=1.5&max=5000
-```
-
----
-
-🖥 Deploy ke VPS (Flask)
-
-```python
-from flask import Flask, request, jsonify
-from unces import chat
-
-app = Flask(__name__)
-
-@app.route('/api/chat')
-def api_chat():
-    prompt = request.args.get('prompt', '')
-    if not prompt:
-        return jsonify({"error": "prompt required"}), 400
-    new_chat = request.args.get('new', 'false') == 'true'
-    temp = float(request.args.get('temp', 0.9))
-    max_tokens = int(request.args.get('max', 100000))
-    result = chat(prompt, temperature=temp, max_tokens=max_tokens, new_chat=new_chat, stream=False)
-    return jsonify(result)
-
-if __name__ == '__main__':
-    app.run(port=3000)
-```
-
----
-
-🔬 Arsitektur & Reverse Engineering
-
-```
-Client (CLI / HTTP GET)
-       │
-       ▼
-  unces.py
-       │
-       ├─ Cek .unces_token.json
-       │     ├─ Tidak ada / Expired → POST /auth/v1/signup (auto)
-       │     └─ Ada → gunakan existing token
-       │
-       ├─ Load .unces_context.json (multi-turn history)
-       │
-       ▼
-  POST https://mkstqjtsujvcaobdksxs.supabase.co/functions/v1/chat-streaming
-       Body: {
-         messages: [...],
-         systemPrompt: "...",
-         stream: true,
-         temperature: 0.9,
-         max_tokens: 100000
-       }
-       │
-       ▼
-  SSE Stream: data: {"choices":[{"delta":{"content":"token"}}]}
-       │
-       ├─ Streaming mode → print langsung
-       └─ JSON mode → buffer semua token → return JSON
-```
-
----
-
-⚠️ Disclaimer
-
-Proyek ini dibuat untuk tujuan edukasi dan penelitian reverse engineering. Bukan produk resmi dari uncensored.ai atau Supabase.
-
----
-
 <div align="center">
-  <br>
-  <p>
-    <strong>Made with ❤️ by <a href="https://github.com/rynaqrtz">rynaqrtz</a></strong>
-  </p>
-  <p>
-    <sub>⭐ Star repo ini kalau berguna buat kamu!</sub>
-  </p>
+  <strong>Made with ❤️ by <a href="https://github.com/rynaqrtz">rynaqrtz</a></strong>
 </div>
