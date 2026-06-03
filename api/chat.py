@@ -1,8 +1,5 @@
 from http.server import BaseHTTPRequestHandler
-import json
-import urllib.parse
-import sys
-import os
+import json, urllib.parse, sys, os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from unces import chat, CREATOR
@@ -22,20 +19,13 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(json.dumps({
-                "success": False,
-                "creator": CREATOR,
-                "error": 'Parameter "prompt" diperlukan'
+                "success": False, "creator": CREATOR, "error": 'Parameter "prompt" diperlukan'
             }).encode())
             return
 
         try:
-            result = chat(
-                prompt=prompt,
-                temperature=temperature,
-                max_tokens=max_tokens,
-                new_chat=new_chat,
-                stream=False
-            )
+            result = chat(prompt=prompt, temperature=temperature,
+                         max_tokens=max_tokens, new_chat=new_chat, stream=False)
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.end_headers()
@@ -45,7 +35,5 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(json.dumps({
-                "success": False,
-                "creator": CREATOR,
-                "error": str(e)
+                "success": False, "creator": CREATOR, "error": str(e)
             }).encode())
