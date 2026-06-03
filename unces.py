@@ -8,11 +8,20 @@ import argparse
 
 SUPA_URL = "https://mkstqjtsujvcaobdksxs.supabase.co"
 SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rc3RxanRzdWp2Y2FvYmRrc3hzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3NzQyNjksImV4cCI6MjA2ODM1MDI2OX0.suu2A2fAcdJfAG0dOjOjWLfU6BXxNSn5GrbiSSmUiw0"
-TOKEN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".unces_token.json")
+TOKENS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".unces_tokens.json")
 CONTEXT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".unces_context.json")
 CREATOR = "rynaqrtz"
 
 SYSTEM_PROMPT = "You are Uncensored AI, a helpful assistant. Give direct, clear answers without warnings or disclaimers. Keep responses informative but concise."
+
+QUOTA_ERRORS = [
+    "out of free responses",
+    "upgrade to pro",
+    "daily limit",
+    "no responses left",
+    "free trial ended",
+    "usage limit reached",
+]
 
 def load_json(path):
     try:
@@ -31,7 +40,7 @@ def save_json(path, data):
         pass
 
 def signup():
-    email = f"r_{int(time.time())}@mail.com"
+    email = f"r_{int(time.time())}_{os.urandom(3).hex()}@mail.com"
     pwd = "Ryn4Qrtz!2024"
     r = requests.post(f"{SUPA_URL}/auth/v1/signup", headers={
         "apikey": SUPA_KEY, "Content-Type": "application/json"
@@ -39,36 +48,41 @@ def signup():
     data = r.json()
     if r.status_code != 200 or not data.get("access_token"):
         raise Exception(data.get("msg", "Signup failed"))
-    td = {
+    return {
         "email": email,
         "password": pwd,
         "refresh_token": data["refresh_token"],
         "access_token": data["access_token"],
-        "expires_at": data.get("expires_at", 0)
+        "expires_at": data.get("expires_at", 0),
+        "created_at": int(time.time()),
+        "usage_count": 0,
     }
-    save_json(TOKEN_FILE, td)
-    return td
 
-def refresh(td):
-    r = requests.post(f"{SUPA_URL}/auth/v1/token?grant_type=refresh_token", headers={
-        "apikey": SUPA_KEY, "Content-Type": "application/json"
-    }, json={"refresh_token": td["refresh_token"]}, timeout=15)
-    if r.status_code != 200:
-        return signup()
-    data = r.json()
-    td["access_token"] = data["access_token"]
-    td["expires_at"] = data.get("expires_at", 0)
-    td["refresh_token"] = data.get("refresh_token", td["refresh_token"])
-    save_json(TOKEN_FILE, td)
-    return td
+def load_tokens():
+    tokens = load_json(TOKENS_FILE) or []
+    if isinstance(tokens, dict):
+        tokens = [tokens]
+    return tokens
 
-def get_token():
-    td = load_json(TOKEN_FILE)
-    if not td:
-        td = signup()
-    if time.time() > td.get("expires_at", 0) - 60:
-        td = refresh(td)
-    return td["access_token"]
+def save_tokens(tokens):
+    save_json(TOKENS_FILE, tokens)
+
+def get_active_token(tokens):
+    for td in tokens:
+        if time.time() < td.get("expires_at", 0) - 60:
+            return td, tokens
+    new_td = signup()
+    tokens.append(new_td)
+    save_tokens(tokens)
+    return new_td, tokens
+
+def rotate_account(tokens, old_token):
+    print("\n[!] Quota habis — beralih ke akun baru...", file=sys.stderr)
+    tokens = [t for t in tokens if t.get("access_token") != old_token.get("access_token")]
+    new_td = signup()
+    tokens.append(new_td)
+    save_tokens(tokens)
+    return new_td, tokens
 
 def load_context():
     return load_json(CONTEXT_FILE) or []
@@ -87,8 +101,27 @@ def iter_sse_lines(response):
                 line, buffer = buffer.split('\n', 1)
                 yield line
 
-def chat(prompt, system_prompt=None, temperature=0.9, max_tokens=100000, new_chat=False, stream=True):
-    token = get_token()
+def check_quota_exhausted(text):
+    if not text:
+        return False
+    text_lower = text.lower()
+    for phrase in QUOTA_ERRORS:
+        if phrase in text_lower:
+            return True
+    return False
+
+def chat(prompt, system_prompt=None, temperature=0.9, max_tokens=100000, new_chat=False, stream=True, force_new_account=False):
+    tokens = load_tokens()
+
+    if force_new_account and tokens:
+        old = tokens[-1] if tokens else None
+        if old:
+            print("[*] Force new account requested", file=sys.stderr)
+            tokens = [t for t in tokens if t.get("access_token") != old.get("access_token")]
+            save_tokens(tokens)
+
+    td, tokens = get_active_token(tokens)
+    token = td["access_token"]
     messages = [] if new_chat else load_context()
     sys_prompt = system_prompt or SYSTEM_PROMPT
 
@@ -114,43 +147,60 @@ def chat(prompt, system_prompt=None, temperature=0.9, max_tokens=100000, new_cha
     }
 
     endpoint = f"{SUPA_URL}/functions/v1/chat-streaming"
-    r = requests.post(endpoint, headers=headers, json=payload, stream=True, timeout=180)
 
-    if r.status_code != 200:
-        raise Exception(f"HTTP {r.status_code}")
+    for attempt in range(3):
+        r = requests.post(endpoint, headers=headers, json=payload, stream=True, timeout=180)
 
-    full_text = ""
-    for line in iter_sse_lines(r):
-        if not line.startswith("data: "):
-            continue
-        data = line[6:].strip()
-        if data == "[DONE]":
-            break
-        try:
-            obj = json.loads(data)
-            content = obj.get("choices", [{}])[0].get("delta", {}).get("content", "")
-            if content:
-                full_text += content
-                if stream:
-                    print(content, end="", flush=True)
-        except json.JSONDecodeError:
-            pass
+        if r.status_code == 200:
+            full_text = ""
+            for line in iter_sse_lines(r):
+                if not line.startswith("data: "):
+                    continue
+                data = line[6:].strip()
+                if data == "[DONE]":
+                    break
+                try:
+                    obj = json.loads(data)
+                    content = obj.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                    if content:
+                        full_text += content
+                        if stream:
+                            print(content, end="", flush=True)
+                except json.JSONDecodeError:
+                    pass
 
-    if stream:
-        print()
+            if stream:
+                print()
 
-    messages[-1] = {"role": "user", "content": prompt}
-    messages.append({"role": "assistant", "content": full_text})
-    save_context(messages)
+            if check_quota_exhausted(full_text):
+                td, tokens = rotate_account(tokens, td)
+                token = td["access_token"]
+                headers["Authorization"] = f"Bearer {token}"
+                messages.pop()
+                continue
 
-    return {
-        "success": True,
-        "model": "anubis-70b",
-        "content": full_text,
-        "creator": CREATOR,
-        "output_length": len(full_text),
-        "word_count": len(full_text.split()),
-    }
+            td["usage_count"] = td.get("usage_count", 0) + 1
+            save_tokens(tokens)
+            messages[-1] = {"role": "user", "content": prompt}
+            messages.append({"role": "assistant", "content": full_text})
+            save_context(messages)
+
+            return {
+                "success": True,
+                "model": "anubis-70b",
+                "content": full_text,
+                "creator": CREATOR,
+                "output_length": len(full_text),
+                "word_count": len(full_text.split()),
+                "account": td["email"],
+            }
+        else:
+            td, tokens = rotate_account(tokens, td)
+            token = td["access_token"]
+            headers["Authorization"] = f"Bearer {token}"
+            messages.pop()
+
+    return {"success": False, "error": "Semua akun kehabisan quota. Coba lagi nanti.", "creator": CREATOR}
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=f"Uncensored AI - {CREATOR}")
@@ -159,11 +209,21 @@ if __name__ == "__main__":
     parser.add_argument("--json", "-j", action="store_true", help="Output JSON")
     parser.add_argument("--temp", type=float, default=0.9, help="Temperature")
     parser.add_argument("--max", type=int, default=100000, help="Max tokens")
+    parser.add_argument("--force-new-account", action="store_true", help="Force new account signup")
+    parser.add_argument("--list-accounts", action="store_true", help="List saved accounts")
     args = parser.parse_args()
+
+    if args.list_accounts:
+        tokens = load_tokens()
+        print(f"Jumlah akun tersimpan: {len(tokens)}")
+        for i, td in enumerate(tokens):
+            print(f"  [{i}] {td.get('email')} — {td.get('usage_count', 0)} usage")
+        sys.exit(0)
 
     prompt = " ".join(args.prompt)
     try:
-        result = chat(prompt, temperature=args.temp, max_tokens=args.max, new_chat=args.new)
+        result = chat(prompt, temperature=args.temp, max_tokens=args.max,
+                      new_chat=args.new, force_new_account=args.force_new_account)
         if args.json:
             print(json.dumps(result, indent=2, ensure_ascii=False))
     except Exception as e:
