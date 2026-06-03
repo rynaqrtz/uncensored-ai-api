@@ -1,5 +1,8 @@
 from http.server import BaseHTTPRequestHandler
-import json, urllib.parse, sys, os
+import json
+import urllib.parse
+import sys
+import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from unces import chat, CREATOR
@@ -10,19 +13,27 @@ class handler(BaseHTTPRequestHandler):
         params = urllib.parse.parse_qs(parsed.query)
 
         prompt = " ".join(params.get("prompt", []))
+        new_chat = "new" in params or "n" in params
+        temperature = float(params.get("temp", [0.9])[0])
+        max_tokens = int(params.get("max", [100000])[0])
+
         if not prompt:
             self.send_response(400)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            self.wfile.write(json.dumps({"success": False, "creator": CREATOR, "error": 'Parameter "prompt" diperlukan'}).encode())
+            self.wfile.write(json.dumps({
+                "success": False,
+                "creator": CREATOR,
+                "error": 'Parameter "prompt" diperlukan'
+            }).encode())
             return
 
         try:
             result = chat(
                 prompt=prompt,
-                temperature=float(params.get("temp", [0.9])[0]),
-                max_tokens=int(params.get("max", [100000])[0]),
-                new_chat=("new" in params or "n" in params),
+                temperature=temperature,
+                max_tokens=max_tokens,
+                new_chat=new_chat,
                 stream=False
             )
             self.send_response(200)
@@ -33,4 +44,8 @@ class handler(BaseHTTPRequestHandler):
             self.send_response(500)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            self.wfile.write(json.dumps({"success": False, "creator": CREATOR, "error": str(e)}).encode())
+            self.wfile.write(json.dumps({
+                "success": False,
+                "creator": CREATOR,
+                "error": str(e)
+            }).encode())
