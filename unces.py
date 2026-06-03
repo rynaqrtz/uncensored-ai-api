@@ -1,4 +1,10 @@
-import requests, json, os, sys, time, codecs, argparse
+import requests
+import json
+import os
+import sys
+import time
+import codecs
+import argparse
 
 SUPA_URL = "https://mkstqjtsujvcaobdksxs.supabase.co"
 SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rc3RxanRzdWp2Y2FvYmRrc3hzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3NzQyNjksImV4cCI6MjA2ODM1MDI2OX0.suu2A2fAcdJfAG0dOjOjWLfU6BXxNSn5GrbiSSmUiw0"
@@ -13,14 +19,16 @@ def load_json(path):
         if os.path.exists(path):
             with open(path, "r") as f:
                 return json.load(f)
-    except: pass
+    except:
+        pass
     return None
 
 def save_json(path, data):
     try:
         with open(path, "w") as f:
             json.dump(data, f)
-    except: pass
+    except:
+        pass
 
 def signup():
     email = f"r_{int(time.time())}@mail.com"
@@ -32,7 +40,8 @@ def signup():
     if r.status_code != 200 or not data.get("access_token"):
         raise Exception(data.get("msg", "Signup failed"))
     td = {
-        "email": email, "password": pwd,
+        "email": email,
+        "password": pwd,
         "refresh_token": data["refresh_token"],
         "access_token": data["access_token"],
         "expires_at": data.get("expires_at", 0)
@@ -55,8 +64,10 @@ def refresh(td):
 
 def get_token():
     td = load_json(TOKEN_FILE)
-    if not td: td = signup()
-    if time.time() > td.get("expires_at", 0) - 60: td = refresh(td)
+    if not td:
+        td = signup()
+    if time.time() > td.get("expires_at", 0) - 60:
+        td = refresh(td)
     return td["access_token"]
 
 def load_context():
@@ -102,33 +113,42 @@ def chat(prompt, system_prompt=None, temperature=0.9, max_tokens=100000, new_cha
         "Content-Type": "application/json",
     }
 
-    r = requests.post(f"{SUPA_URL}/functions/v1/chat-streaming", headers=headers, json=payload, stream=True, timeout=180)
+    endpoint = f"{SUPA_URL}/functions/v1/chat-streaming"
+    r = requests.post(endpoint, headers=headers, json=payload, stream=True, timeout=180)
 
     if r.status_code != 200:
         raise Exception(f"HTTP {r.status_code}")
 
     full_text = ""
     for line in iter_sse_lines(r):
-        if not line.startswith("data: "): continue
+        if not line.startswith("data: "):
+            continue
         data = line[6:].strip()
-        if data == "[DONE]": break
+        if data == "[DONE]":
+            break
         try:
             obj = json.loads(data)
             content = obj.get("choices", [{}])[0].get("delta", {}).get("content", "")
             if content:
                 full_text += content
-                if stream: print(content, end="", flush=True)
-        except json.JSONDecodeError: pass
+                if stream:
+                    print(content, end="", flush=True)
+        except json.JSONDecodeError:
+            pass
 
-    if stream: print()
+    if stream:
+        print()
 
     messages[-1] = {"role": "user", "content": prompt}
     messages.append({"role": "assistant", "content": full_text})
     save_context(messages)
 
     return {
-        "success": True, "model": "anubis-70b", "content": full_text,
-        "creator": CREATOR, "output_length": len(full_text),
+        "success": True,
+        "model": "anubis-70b",
+        "content": full_text,
+        "creator": CREATOR,
+        "output_length": len(full_text),
         "word_count": len(full_text.split()),
     }
 
@@ -144,7 +164,8 @@ if __name__ == "__main__":
     prompt = " ".join(args.prompt)
     try:
         result = chat(prompt, temperature=args.temp, max_tokens=args.max, new_chat=args.new)
-        if args.json: print(json.dumps(result, indent=2, ensure_ascii=False))
+        if args.json:
+            print(json.dumps(result, indent=2, ensure_ascii=False))
     except Exception as e:
         print(f"[!] Error: {e}", file=sys.stderr)
         sys.exit(1)
